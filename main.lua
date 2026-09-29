@@ -1,21 +1,61 @@
-local function b64decode(s)
-    local b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-    local o = ""
-    for i = 1, #s, 4 do
-        local c1, c2, c3, c4 = s:sub(i,i), s:sub(i+1,i+1), s:sub(i+2,i+2), s:sub(i+3,i+3)
-        if c1 ~= "" and c2 ~= "" and c1 ~= "=" and c2 ~= "=" then
-            local n = (b:find(c1)-1) * 262144 + (b:find(c2)-1) * 4096
-            if c3 ~= "" and c3 ~= "=" then
-                n = n + (b:find(c3)-1) * 64
-                o = o .. string.char(math.floor(n / 65536))
-                o = o .. string.char(math.floor(n / 256) % 256)
-                if c4 ~= "" and c4 ~= "=" then
-                    o = o .. string.char(n % 256)
-                end
-            end
-        end
+local stop = false
+
+game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
+    if gp then return end
+    if input.KeyCode == Enum.KeyCode.F3 then
+        stop = true
+        print("СТОП")
     end
-    return o
+end)
+
+while not stop do
+local VIM = game:GetService("VirtualInputManager")
+VIM:SendMouseButtonEvent(950, 667, 0, true, game, 0)
+wait(0.3)
+VIM:SendMouseButtonEvent(950, 667, 0, false, game, 0)
+print("Кликнул (950, 667)")   
+wait(0.4)
+local VI = game:GetService("VirtualInputManager")
+VI:SendMouseButtonEvent(639, 679, 0, true, game, 0)
+wait(0.3)
+VI:SendMouseButtonEvent(639, 679, 0, false, game, 0)
+print("Кликнул (639, 679")  
+wait(3)
+
+
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+local function getHrp()
+    local char = player.Character
+    if not char then return nil end
+    return char:FindFirstChild("HumanoidRootPart")
 end
 
-loadstring(b64decode("bG9jYWwgc3RvcCA9IGZhbHNlCgpnYW1lOkdldFNlcnZpY2UoIlVzZXJJbnB1dFNlcnZpY2UiKS5JbnB1dEJlZ2FuOkNvbm5lY3QoZnVuY3Rpb24oaW5wdXQsIGdwKQogICAgaWYgZ3AgdGhlbiByZXR1cm4gZW5kCiAgICBpZiBpbnB1dC5LZXlDb2RlID09IEVudW0uS2V5Q29kZS5GMyB0aGVuCiAgICAgICAgc3RvcCA9IHRydWUKICAgICAgICBwcmludCgiU1RPUCIpCiAgICBlbmQKZW5kKQoKd2hpbGUgbm90IHN0b3AgZG8KICAgIGxvY2FsIFZJTSA9IGdhbWU6R2V0U2VydmljZSgiVmlydHVhbElucHV0TWFuYWdlciIpCiAgICBWSU06U2VuZE1vdXNlQnV0dG9uRXZlbnQoOTUwLCA2NjcsIDAsIHRydWUsIGdhbWUsIDApCiAgICB3YWl0KDAuMykKICAgIFZJTTpTZW5kTW91c2VCdXR0b25FdmVudCg5NTAsIDY2NywgMCwgZmFsc2UsIGdhbWUsIDApCiAgICBwcmludCgiQ2xpY2sgMSIpCiAgICB3YWl0KDAuNCkKICAgIFZJTTpTZW5kTW91c2VCdXR0b25FdmVudCg2MzksIDY3OSwgMCwgdHJ1ZSwgZ2FtZSwgMCkKICAgIHdhaXQoMC4zKQogICAgVklNOlNlbmRNb3VzZUJ1dHRvbkV2ZW50KDYzOSwgNjc5LCAwLCBmYWxzZSwgZ2FtZSwgMCkKICAgIHByaW50KCJDbGljayAyIikKICAgIHdhaXQoMykKCiAgICBsb2NhbCBwbGF5ZXIgPSBnYW1lLlBsYXllcnMuTG9jYWxQbGF5ZXIKICAgIGxvY2FsIGNhbWVyYSA9IHdvcmtzcGFjZS5DdXJyZW50Q2FtZXJhCgogICAgbG9jYWwgZnVuY3Rpb24gZ2V0SHJwKCkKICAgICAgICBsb2NhbCBjaGFyID0gcGxheWVyLkNoYXJhY3RlcgogICAgICAgIGlmIG5vdCBjaGFyIHRoZW4gcmV0dXJuIG5pbCBlbmQKICAgICAgICByZXR1cm4gY2hhcjpGaW5kRmlyc3RDaGlsZCgiSHVtYW5vaWRSb290UGFydCIpCiAgICBlbmQKCiAgICB3aGlsZSBub3QgZ2V0SHJwKCkgZG8gd2FpdCgwLjEpIGVuZAoKICAgIGxvY2FsIHJvb21zID0gd29ya3NwYWNlLl9USElOR1MuTWluaWdhbWVzLlJhaWRMb2JieS5Sb29tcwogICAgaWYgbm90IHJvb21zIHRoZW4gd2FpdCg1KSBjb250aW51ZSBlbmQKCiAgICBmb3IgaSA9IDEsIDYgZG8KICAgICAgICBsb2NhbCByb29tID0gcm9vbXNbdG9zdHJpbmcoaSldCiAgICAgICAgaWYgcm9vbSB0aGVuCiAgICAgICAgICAgIGxvY2FsIGdhdGUgPSByb29tLkdhdGVbdG9zdHJpbmcoMSldCiAgICAgICAgICAgIGlmIGdhdGUgdGhlbgogICAgICAgICAgICAgICAgbG9jYWwgaHJwID0gZ2V0SHJwKCkKICAgICAgICAgICAgICAgIGlmIGhycCB0aGVuCiAgICAgICAgICAgICAgICAgICAgaHJwLkNGcmFtZSA9IGdhdGUuQ0ZyYW1lICsgVmVjdG9yMy5uZXcoMCwgMywgMCkKICAgICAgICAgICAgICAgICAgICBjYW1lcmEuQ0ZyYW1lID0gQ0ZyYW1lLmxvb2tBdChocnAuUG9zaXRpb24gKyBWZWN0b3IzLm5ldygwLCAzLCAwKSwgZ2F0ZS5Qb3NpdGlvbikKICAgICAgICAgICAgICAgICAgICBwcmludCgiR2F0ZSAiIC4uIGkpCiAgICAgICAgICAgICAgICBlbmQKICAgICAgICAgICAgZW5kCiAgICAgICAgZW5kCiAgICAgICAgd2FpdCgxLjIpCiAgICBlbmQKCiAgICBsb2NhbCBpbnRlcmFjdCA9IHdvcmtzcGFjZS5fVEhJTkdTLk1pbmlnYW1lcy5SYWlkTG9iYnkuSW50ZXJhY3QKICAgIGlmIGludGVyYWN0IHRoZW4KICAgICAgICBsb2NhbCBkb29yID0gaW50ZXJhY3Q6R2V0Q2hpbGRyZW4oKVs0XQogICAgICAgIGlmIGRvb3IgdGhlbgogICAgICAgICAgICBsb2NhbCBzaGFkb3cgPSBkb29yOkZpbmRGaXJzdENoaWxkKCJTaGFkb3ciKQogICAgICAgICAgICBpZiBzaGFkb3cgdGhlbgogICAgICAgICAgICAgICAgbG9jYWwgaHJwID0gZ2V0SHJwKCkKICAgICAgICAgICAgICAgIGlmIGhycCB0aGVuCiAgICAgICAgICAgICAgICAgICAgaHJwLkNGcmFtZSA9IHNoYWRvdy5DRnJhbWUKICAgICAgICAgICAgICAgICAgICBjYW1lcmEuQ0ZyYW1lID0gQ0ZyYW1lLmxvb2tBdChocnAuUG9zaXRpb24gKyBWZWN0b3IzLm5ldygwLCAzLCAwKSwgc2hhZG93LlBvc2l0aW9uKQogICAgICAgICAgICAgICAgICAgIHByaW50KCJTaGFkb3ciKQogICAgICAgICAgICAgICAgZW5kCiAgICAgICAgICAgIGVuZAogICAgICAgIGVuZAogICAgZW5kCgogICAgcHJpbnQoIkRvbmUiKQogICAgd2FpdCgzKQplbmQgICA="))()
+while not getHrp() do wait(0.1) end
+
+local rooms = workspace._THINGS.Minigames.RaidLobby.Rooms
+
+for i = 1, 6 do
+    local gate = rooms[i].Gate[tostring(1)]
+    if gate then
+        local hrp = getHrp()
+        hrp.CFrame = gate.CFrame + Vector3.new(0, 3, 0)
+        camera.CFrame = CFrame.lookAt(hrp.Position + Vector3.new(0, 3, 0), gate.Position)
+        print("ТП к Gate " .. i)
+    end
+    wait(1.2)
+end
+
+-- ТП к Door1
+local door = workspace._THINGS.Minigames.RaidLobby.Interact:GetChildren()[4].Shadow
+    if door then
+        local hrp = getHrp()
+        hrp.CFrame = door.CFrame
+        camera.CFrame = CFrame.lookAt(hrp.Position + Vector3.new(0, 3, 0), door.Position)
+        print("ТП к Door1")
+    end
+
+    print("Готово")
+    wait(3)
+end
